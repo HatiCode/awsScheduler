@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -15,7 +16,7 @@ func Hello() {
 func ListS3() {
 	sdkConfig, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		fmt.Println("Couldn't load default config")
+		fmt.Println("Couldn't load default config, is your AWS default profile set ?")
 		fmt.Println(err)
 		return
 	}
@@ -34,7 +35,9 @@ func ListS3() {
 			count = len(result.Buckets)
 		}
 		for _, bucket := range result.Buckets[:count] {
-			fmt.Printf("\t%v\n", *bucket.Name)
+			bucketTime := *bucket.CreationDate
+			creationTime := bucketTime.Add(time.Hour * 2)
+			fmt.Printf("\t%v %v\n", *bucket.Name, creationTime.Format(time.RFC850))
 		}
 	}
 }
