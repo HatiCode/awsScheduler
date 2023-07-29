@@ -14,13 +14,13 @@ func Hello() {
 }
 
 func ListS3() {
-	sdkConfig, err := config.LoadDefaultConfig(context.TODO())
+	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		fmt.Println("Couldn't load default config, is your AWS default profile set ?")
 		fmt.Println(err)
 		return
 	}
-	s3Client := s3.NewFromConfig(sdkConfig)
+	s3Client := s3.NewFromConfig(cfg)
 	count := 10
 	fmt.Printf("Let's list up to %v buckets :\n", count)
 	result, err := s3Client.ListBuckets(context.TODO(), &s3.ListBucketsInput{})
