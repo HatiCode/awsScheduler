@@ -9,10 +9,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
-func Hello() {
-	fmt.Println("Hello")
-}
-
 func ListS3() {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
