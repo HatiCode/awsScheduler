@@ -13,11 +13,14 @@ func main() {
 	fmt.Println("testing S3")
 	cmd.ListS3()
 
-	fmt.Println("Creating SQS")
+	fmt.Println("Listing SQS")
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		Config:  aws.Config{Region: aws.String("eu-central-1")},
 		Profile: "scheduler-test",
 	}))
 	// utils.CreateSQS(sess, "test-queue")
-	utils.ListSQS(sess)
+	list := utils.ListSQS(sess, "test")
+	for i, l := range list {
+		fmt.Printf("%d: %s\n", i, l)
+	}
 }

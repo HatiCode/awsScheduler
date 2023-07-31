@@ -25,15 +25,19 @@ func CreateSQS(sess *session.Session, name string) (queueUrl *string) {
 	return result.QueueUrl
 }
 
-func ListSQS(sess *session.Session) {
+func ListSQS(sess *session.Session, name string) (queueList []string) {
 	svc := sqs.New(sess)
+	var urlList []string
 
-	result, err := svc.ListQueues(nil)
+	result, err := svc.ListQueues(&sqs.ListQueuesInput{
+		QueueNamePrefix: aws.String(name),
+	})
 	if err != nil {
 		fmt.Println("Couldn't list queues")
 		fmt.Println(err)
 	}
-	for i, url := range result.QueueUrls {
-		fmt.Printf("%d: %v\n", i, *url)
+	for _, url := range result.QueueUrls {
+		urlList = append(urlList, *url)
 	}
+	return urlList
 }
