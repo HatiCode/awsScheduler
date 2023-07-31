@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 )
 
-func CreateSQS(sess *session.Session, name string) (queueUrl string) {
+func CreateSQS(sess *session.Session, name string) (queueUrl *string) {
 	svc := sqs.New(sess)
 
 	result, err := svc.CreateQueue(&sqs.CreateQueueInput{
@@ -19,17 +19,21 @@ func CreateSQS(sess *session.Session, name string) (queueUrl string) {
 		},
 	})
 	if err != nil {
-		fmt.Println("Counld not create queue %v", name)
+		fmt.Printf("Couldn't not create queue %v\n", name)
+		fmt.Println(err)
 	}
-	return *result.QueueUrl
+	return result.QueueUrl
 }
 
-// func CheckQueueExists(sess *session.Session, name string) bool {
-// 	svc := sqs.New(sess)
+func ListSQS(sess *session.Session) {
+	svc := sqs.New(sess)
 
-// 	result, err := svc.ListQueues(nil)
-// 	if err != nil {
-// 		fmt.Println("Couldn't fetch queues")
-// 		fmt.Println(err)
-// 	}
-// }
+	result, err := svc.ListQueues(nil)
+	if err != nil {
+		fmt.Println("Couldn't list queues")
+		fmt.Println(err)
+	}
+	for i, url := range result.QueueUrls {
+		fmt.Printf("%d: %v\n", i, *url)
+	}
+}
