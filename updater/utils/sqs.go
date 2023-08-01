@@ -41,3 +41,14 @@ func ListSQS(sess *session.Session, name string) (queueList []string) {
 	}
 	return urlList
 }
+
+func SendMsg(sess *session.Session, queueUrl string, msgBody string) error {
+	sqsClient := sqs.New(sess)
+
+	_, err := sqsClient.SendMessage(&sqs.SendMessageInput{
+		QueueUrl:    &queueUrl,
+		MessageBody: aws.String(msgBody),
+	})
+
+	return err
+}

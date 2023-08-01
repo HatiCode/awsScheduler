@@ -23,4 +23,12 @@ func main() {
 	for i, l := range list {
 		fmt.Printf("%d: %s\n", i, l)
 	}
+
+	queue := list[0]
+	fmt.Printf("Sending test message to %s\n", queue)
+	err := utils.SendMsg(sess, queue, "Hello, world!")
+	if err != nil {
+		fmt.Println("Error in sending test message")
+	}
+	fmt.Println("Test message sent")
 }
