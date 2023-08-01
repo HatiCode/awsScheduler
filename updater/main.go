@@ -31,4 +31,12 @@ func main() {
 		fmt.Println("Error in sending test message")
 	}
 	fmt.Println("Test message sent")
+
+	fmt.Printf("Reading Test message from %s\n", queue)
+	msg, err := utils.GetMsg(sess, queue, 10)
+	if err != nil {
+		fmt.Println("Error in reading Test message")
+		fmt.Println(err)
+	}
+	fmt.Println(msg)
 }
