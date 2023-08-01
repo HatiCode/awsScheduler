@@ -43,11 +43,37 @@ func ListSQS(sess *session.Session, name string) (queueList []string) {
 }
 
 func SendMsg(sess *session.Session, queueUrl string, msgBody string) error {
-	sqsClient := sqs.New(sess)
+	svc := sqs.New(sess)
 
-	_, err := sqsClient.SendMessage(&sqs.SendMessageInput{
+	_, err := svc.SendMessage(&sqs.SendMessageInput{
 		QueueUrl:    &queueUrl,
 		MessageBody: aws.String(msgBody),
+	})
+
+	return err
+}
+
+func GetMsg(sess *session.Session, queueUrl string, maxMessages int) (*sqs.ReceiveMessageOutput, error) {
+	svc := sqs.New(sess)
+
+	msgResult, err := svc.ReceiveMessage(&sqs.ReceiveMessageInput{
+		QueueUrl:            &queueUrl,
+		MaxNumberOfMessages: aws.Int64(int64(maxMessages)),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return msgResult, nil
+}
+
+func DeleteMsg(sess *session.Session, queueUrl string, messageHandle *string) error {
+	svc := sqs.New(sess)
+
+	_, err := svc.DeleteMessage(&sqs.DeleteMessageInput{
+		QueueUrl:      &queueUrl,
+		ReceiptHandle: messageHandle,
 	})
 
 	return err
