@@ -25,3 +25,6 @@ policies*
 
 # VSCode Workspace
 *.code-workspace
+
+# DS_Store
+.DS_Store*
