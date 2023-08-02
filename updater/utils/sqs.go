@@ -14,8 +14,13 @@ func CreateSQS(sess *session.Session, name string) (queueUrl *string) {
 	result, err := svc.CreateQueue(&sqs.CreateQueueInput{
 		QueueName: aws.String(name),
 		Attributes: map[string]*string{
-			"DelaySeconds":           aws.String("10"),
+			"DelaySeconds":           aws.String("0"),
 			"MessageRetentionPeriod": aws.String("86400"),
+			"VisibilityTimeout":      aws.String("3600"),
+			"SqsManagedSseEnabled":   aws.String("false"),
+		},
+		Tags: map[string]*string{
+			"env": aws.String("dev"),
 		},
 	})
 	if err != nil {
@@ -74,6 +79,16 @@ func DeleteMsg(sess *session.Session, queueUrl string, messageHandle *string) er
 	_, err := svc.DeleteMessage(&sqs.DeleteMessageInput{
 		QueueUrl:      &queueUrl,
 		ReceiptHandle: messageHandle,
+	})
+
+	return err
+}
+
+func PurgeQueue(sess *session.Session, queueUrl string) error {
+	svc := sqs.New(sess)
+
+	_, err := svc.PurgeQueue(&sqs.PurgeQueueInput{
+		QueueUrl: aws.String(queueUrl),
 	})
 
 	return err
