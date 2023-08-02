@@ -22,3 +22,6 @@ go.work
 
 # Policy folders
 policies*
+
+# VSCode Workspace
+*.code-workspace
