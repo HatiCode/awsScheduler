@@ -2,14 +2,28 @@ package utils
 
 import (
 	"fmt"
+	"io"
+	"os"
+	"path/filepath"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 )
 
-func CreateSQS(sess *session.Session, name string) (queueUrl *string) {
+func CreateSQS(sess *session.Session, name string, policyName string) (queueUrl *string) {
 	svc := sqs.New(sess)
+
+	// TODO Create secrets for policies
+	policiesFolder, _ := os.LookupEnv("SCHEDULER_POLICY_PATH")
+	policiesPath := filepath.Join(policiesFolder, "/", policyName)
+	jsonFile, err := os.Open(policiesPath)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer jsonFile.Close()
+	byteValue, _ := io.ReadAll(jsonFile)
 
 	result, err := svc.CreateQueue(&sqs.CreateQueueInput{
 		QueueName: aws.String(name),
@@ -18,6 +32,7 @@ func CreateSQS(sess *session.Session, name string) (queueUrl *string) {
 			"MessageRetentionPeriod": aws.String("86400"),
 			"VisibilityTimeout":      aws.String("3600"),
 			"SqsManagedSseEnabled":   aws.String("false"),
+			"Policy":                 aws.String(string(byteValue)),
 		},
 		Tags: map[string]*string{
 			"env": aws.String("dev"),
