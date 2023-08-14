@@ -28,7 +28,7 @@ func main() {
 	if len(list) == 0 {
 		fmt.Println("No SQS queues found")
 		fmt.Println("Creating SQS Queue...")
-		newSqs := utils.CreateSQS(sess, sqsName, "sqs,json")
+		newSqs := utils.CreateSQS(sess, sqsName, "sqs.json")
 		fmt.Printf("New queue %d created\n", newSqs)
 		time.Sleep(30 * time.Second)
 	}
