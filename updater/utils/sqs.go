@@ -15,6 +15,7 @@ func CreateSQS(sess *session.Session, name string, policyName string) (queueUrl 
 	svc := sqs.New(sess)
 
 	// TODO Create secrets for policies
+	// Policy is passed as json file
 	policiesFolder, _ := os.LookupEnv("SCHEDULER_POLICY_PATH")
 	policiesPath := filepath.Join(policiesFolder, "/", policyName)
 	jsonFile, err := os.Open(policiesPath)
