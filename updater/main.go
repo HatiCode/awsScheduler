@@ -33,6 +33,8 @@ func main() {
 		time.Sleep(30 * time.Second)
 	}
 
+	utils.getPlayer()
+
 	// queue := list[0]
 	// // Send test message to queue
 	// fmt.Printf("Sending test message to %s\n", queue)
