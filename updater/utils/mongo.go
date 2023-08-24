@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func getPlayer(playerName string) {
+func GetPlayer(playerName string) {
 	var uri string
 	if uri = os.Getenv("MONGODB_URI"); uri == "" {
 		log.Fatal("You must set your 'MONGODB_URI' environment variable. See\n\t https://www.mongodb.com/docs/drivers/go/current/usage-examples/#environment-variable")
@@ -31,8 +31,8 @@ func getPlayer(playerName string) {
 	coll := client.Database("lol").Collection("players")
 	filter := bson.D{{Key: "name", Value: playerName}}
 
-	var result Player
-	err = coll.FindOne(context.TODO(), filter).Decode(&result)
+	var results []Player
+	cursor, err := coll.Find(context.TODO(), filter)
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -41,9 +41,16 @@ func getPlayer(playerName string) {
 		panic(err)
 	}
 
-	output, err := json.MarshalIndent(result, "", "    ")
-	if err != nil {
+	if err = cursor.All(context.TODO(), &results); err != nil {
 		panic(err)
 	}
-	fmt.Printf("%s\n", output)
+
+	for _, result := range results {
+		cursor.Decode(&result)
+		output, err := json.MarshalIndent(result, "", "    ")
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("%s\n", output)
+	}
 }

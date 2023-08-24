@@ -9,6 +9,12 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
+// Create 2 databases : rds, ec2
+// List existing accounts in organization
+// for each database, create a collection using account number
+// Scan resource type in each account and add as document to corresponding collection & database
+// Format document with name - uptime - downtime - updated time
+
 func ListS3() {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
